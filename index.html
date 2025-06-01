@@ -83,6 +83,9 @@
         .balloon:nth-child(2) { background-color: #66cc66; }
         .balloon:nth-child(3) { background-color: #6666ff; }
         .balloon:nth-child(4) { background-color: #ffcc66; }
+        .balloon:nth-child(5) { background-color: #ff99cc; }
+        .balloon:nth-child(6) { background-color: #cc66cc; }
+        .balloon:nth-child(7) { background-color: #66ccff; }
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
@@ -92,7 +95,7 @@
             transition: transform 0.3s;
         }
         .message {
-            font-size: 28px;
+            font-size: 24px;
             color: #cc3366;
             margin-top: 30px;
             display: none;
@@ -126,10 +129,13 @@
         <span>B</span><span>I</span><span>R</span><span>T</span><span>H</span><span>D</span><span>A</span><span>Y</span>
     </div>
     <div class="balloons">
-        <div class="balloon" data-message="I">S</div>
-        <div class="balloon" data-message="LOVE">U</div>
-        <div class="balloon" data-message="YOU">R</div>
-        <div class="balloon" data-message="SURBALA!">B</div>
+        <div class="balloon" data-message="love">S</div>
+        <div class="balloon" data-message="ya">U</div>
+        <div class="balloon" data-message="surs">R</div>
+        <div class="balloon" data-message="thank">B</div>
+        <div class="balloon" data-message="you">A</div>
+        <div class="balloon" data-message="sm">L</div>
+        <div class="balloon" data-message="❤">A</div>
     </div>
     <div class="message">TAP THE BALLOONS TO REVEAL A SPECIAL MESSAGE!</div>
     <div class="hidden-message" id="hiddenMessage"></div>
@@ -162,7 +168,7 @@
                     hiddenMessageDiv.classList.add('show');
 
                     if (poppedCount === balloons.length) {
-                        messageDiv.textContent = 'HAPPY BIRTHDAY, SURBALA!';
+                        messageDiv.textContent = "I know things ended on a rough note but yeah(yuh🔥) I'll always remember those valuable memories and the trust you once shared with me. Happy birthday gng🩷";
                         messageDiv.classList.add('show');
                     }
                 }
