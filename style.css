@@ -1,0 +1,31 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #ffeef0;
+  text-align: center;
+  padding: 50px;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #ff5c8a;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
