@@ -55,6 +55,7 @@
             display: flex;
             justify-content: center;
             margin: 20px 0;
+            position: relative;
         }
         .balloon {
             width: 50px;
@@ -70,6 +71,7 @@
             cursor: pointer;
             animation: float 3s infinite ease-in-out;
             transition: transform 0.3s;
+            z-index: 1;
         }
         .balloon::after {
             content: '';
@@ -93,6 +95,19 @@
         .balloon.popped {
             transform: scale(0);
             transition: transform 0.3s;
+        }
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #ffcc66, transparent);
+            border-radius: 50%;
+            animation: sparkle 1s infinite;
+            z-index: 0;
+        }
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.5); }
         }
         .message {
             font-size: 24px;
@@ -121,6 +136,10 @@
     </style>
 </head>
 <body>
+    <audio id="bgMusic" loop>
+        <source src="https://www.royaltyfree-music.com/sample.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
     <div class="lights">
         <div></div><div></div><div></div><div></div><div></div>
     </div>
@@ -128,46 +147,76 @@
         <span>H</span><span>A</span><span>P</span><span>P</span><span>Y</span>
         <span>B</span><span>I</span><span>R</span><span>T</span><span>H</span><span>D</span><span>A</span><span>Y</span>
     </div>
-    <div class="balloons">
-        <div class="balloon" data-message="love">S</div>
-        <div class="balloon" data-message="ya">U</div>
-        <div class="balloon" data-message="surs">R</div>
-        <div class="balloon" data-message="thank">B</div>
-        <div class="balloon" data-message="you">A</div>
-        <div class="balloon" data-message="sm">L</div>
-        <div class="balloon" data-message="❤">A</div>
+    <div class="balloons" id="balloonsContainer">
+        <div class="balloon" data-letters="lo">S</div>
+        <div class="balloon" data-letters="ve">U</div>
+        <div class="balloon" data-letters=" y">R</div>
+        <div class="balloon" data-letters="a ">B</div>
+        <div class="balloon" data-letters="su">A</div>
+        <div class="balloon" data-letters="rs">L</div>
+        <div class="balloon" data-letters=" t">A</div>
     </div>
-    <div class="message">TAP THE BALLOONS TO REVEAL A SPECIAL MESSAGE!</div>
+    <div class="message">TAP A BALLOON TO START THE MUSIC AND REVEAL A SPECIAL MESSAGE!</div>
     <div class="hidden-message" id="hiddenMessage"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
-        // Confetti effect
+        // Background music
+        const bgMusic = document.getElementById('bgMusic');
+        let hasInteracted = false;
+
+        // Confetti effect (more frequent)
         function launchConfetti() {
             confetti({
-                particleCount: 100,
-                spread: 70,
+                particleCount: 150,
+                spread: 80,
                 origin: { y: 0.6 }
             });
         }
-        setInterval(launchConfetti, 2000);
+        setInterval(launchConfetti, 1000);
+
+        // Add sparkles around balloons
+        const balloonsContainer = document.getElementById('balloonsContainer');
+        function addSparkles() {
+            const sparklesCount = 20;
+            for (let i = 0; i < sparklesCount; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                sparkle.style.left = `${Math.random() * 100}%`;
+                sparkle.style.top = `${Math.random() * 100}%`;
+                sparkle.style.animationDelay = `${Math.random() * 1}s`;
+                balloonsContainer.appendChild(sparkle);
+            }
+        }
+        addSparkles();
 
         // Balloon game
         const balloons = document.querySelectorAll('.balloon');
         const messageDiv = document.querySelector('.message');
         const hiddenMessageDiv = document.getElementById('hiddenMessage');
         let poppedCount = 0;
+        const fullHiddenMessage = "love ya surs thank you sm❤";
+        let revealedMessage = "";
 
         balloons.forEach(balloon => {
             balloon.addEventListener('click', () => {
+                if (!hasInteracted) {
+                    bgMusic.play().catch(() => console.log("Audio play blocked until interaction"));
+                    hasInteracted = true;
+                }
+
                 if (!balloon.classList.contains('popped')) {
                     balloon.classList.add('popped');
                     poppedCount++;
-                    const messagePart = balloon.getAttribute('data-message');
-                    hiddenMessageDiv.textContent += messagePart + ' ';
-                    hiddenMessageDiv.classList.add('show');
+                    const letters = balloon.getAttribute('data-letters');
+                    revealedMessage += letters;
 
-                    if (poppedCount === balloons.length) {
+                    if (poppedCount < balloons.length) {
+                        hiddenMessageDiv.textContent = revealedMessage;
+                        hiddenMessageDiv.classList.add('show');
+                    } else {
+                        hiddenMessageDiv.textContent = fullHiddenMessage;
+                        hiddenMessageDiv.classList.add('show');
                         messageDiv.textContent = "I know things ended on a rough note but yeah(yuh🔥) I'll always remember those valuable memories and the trust you once shared with me. Happy birthday gng🩷";
                         messageDiv.classList.add('show');
                     }
