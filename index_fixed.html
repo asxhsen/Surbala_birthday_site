@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday, Surbala!</title>
+  <style>
+    body {
+      background-color: #fff3e0;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .banner {
+      font-size: 28px;
+      color: #e91e63;
+      margin: 30px 0 10px;
+    }
+    .lights {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .lights div {
+      width: 15px;
+      height: 15px;
+      background-color: #ffcc00;
+      border-radius: 50%;
+      margin: 0 5px;
+      box-shadow: 0 0 10px #ffcc00;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .balloons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 10px;
+    }
+    .balloon {
+      width: 60px;
+      height: 80px;
+      margin: 10px;
+      background-color: #ff4081;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      position: relative;
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+      line-height: 80px;
+      text-align: center;
+      cursor: pointer;
+      animation: float 3s ease-in-out infinite;
+      transition: transform 0.2s;
+    }
+    .balloon.popped {
+      transform: scale(0);
+    }
+    .balloon::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 40px;
+      background: #555;
+      left: 50%;
+      bottom: -40px;
+      transform: translateX(-50%);
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    .message {
+      font-size: 28px;
+      color: #333;
+      margin-top: 30px;
+      display: none;
+    }
+    .hidden-message {
+      font-size: 20px;
+      color: #666;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <audio id="bgMusic" preload="auto">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div class="lights">
+    <div></div><div></div><div></div><div></div><div></div>
+  </div>
+
+  <div class="banner">🎉 Happy Birthday, Surbala! 🎉</div>
+
+  <div class="balloons" id="balloonsContainer">
+    <div class="balloon" data-letters="lo">S</div>
+    <div class="balloon" data-letters="ve">U</div>
+    <div class="balloon" data-letters=" y">R</div>
+    <div class="balloon" data-letters="a ">B</div>
+    <div class="balloon" data-letters="su">A</div>
+    <div class="balloon" data-letters="rs">L</div>
+    <div class="balloon" data-letters=" t">A</div>
+  </div>
+
+  <div class="message">TAP A BALLOON TO START THE MUSIC AND REVEAL A SPECIAL MESSAGE!</div>
+  <div class="hidden-message" id="hiddenMessage"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    const bgMusic = document.getElementById('bgMusic');
+    let hasInteracted = false;
+
+    function launchConfetti() {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    }
+
+    setInterval(launchConfetti, 1200);
+
+    const balloons = document.querySelectorAll('.balloon');
+    const messageDiv = document.querySelector('.message');
+    const hiddenMessageDiv = document.getElementById('hiddenMessage');
+    let poppedCount = 0;
+    const fullHiddenMessage = "love ya surs thank you sm❤";
+    let revealedMessage = "";
+
+    balloons.forEach(balloon => {
+      balloon.addEventListener('click', () => {
+        messageDiv.style.display = 'block';  // Make message visible on click
+
+        if (!hasInteracted) {
+          bgMusic.play().then(() => {
+            hasInteracted = true;
+          }).catch(() => console.log("Audio play blocked until interaction"));
+        }
+
+        if (!balloon.classList.contains('popped')) {
+          balloon.classList.add('popped');
+          poppedCount++;
+          const letters = balloon.getAttribute('data-letters');
+          revealedMessage += letters;
+
+          if (poppedCount < balloons.length) {
+            hiddenMessageDiv.textContent = revealedMessage;
+          } else {
+            hiddenMessageDiv.textContent = fullHiddenMessage;
+            messageDiv.textContent = "I know things ended on a rough note but yeah (yuh🔥) I'll always remember those valuable memories and the trust you once shared with me. Happy birthday gng🩷";
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
