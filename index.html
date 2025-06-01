@@ -11,6 +11,7 @@
             text-align: center;
             margin: 0;
             padding: 20px;
+            overflow: hidden;
         }
         .banner {
             font-size: 24px;
@@ -22,12 +23,15 @@
             color: white;
             padding: 10px;
             margin: 0 5px;
-            transform: rotate(-10deg);
+            animation: bounce 1s infinite alternate;
         }
         .banner span:nth-child(even) {
             background-color: #ffffff;
             color: #66cccc;
-            transform: rotate(10deg);
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
         }
         .lights {
             display: flex;
@@ -41,6 +45,11 @@
             border-radius: 50%;
             margin: 0 10px;
             box-shadow: 0 0 10px #ffcc66;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
         .balloons {
             display: flex;
@@ -58,6 +67,9 @@
             font-size: 24px;
             line-height: 70px;
             font-weight: bold;
+            cursor: pointer;
+            animation: float 3s infinite ease-in-out;
+            transition: transform 0.3s;
         }
         .balloon::after {
             content: '';
@@ -71,10 +83,37 @@
         .balloon:nth-child(2) { background-color: #66cc66; }
         .balloon:nth-child(3) { background-color: #6666ff; }
         .balloon:nth-child(4) { background-color: #ffcc66; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .balloon.popped {
+            transform: scale(0);
+            transition: transform 0.3s;
+        }
         .message {
             font-size: 28px;
             color: #cc3366;
             margin-top: 30px;
+            display: none;
+        }
+        .message.show {
+            display: block;
+            animation: fadeIn 1s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .hidden-message {
+            font-size: 20px;
+            color: #333;
+            margin-top: 20px;
+            display: none;
+        }
+        .hidden-message.show {
+            display: block;
+            animation: fadeIn 1s;
         }
     </style>
 </head>
@@ -87,11 +126,48 @@
         <span>B</span><span>I</span><span>R</span><span>T</span><span>H</span><span>D</span><span>A</span><span>Y</span>
     </div>
     <div class="balloons">
-        <div class="balloon">S</div>
-        <div class="balloon">U</div>
-        <div class="balloon">R</div>
-        <div class="balloon">B</div>
+        <div class="balloon" data-message="I">S</div>
+        <div class="balloon" data-message="LOVE">U</div>
+        <div class="balloon" data-message="YOU">R</div>
+        <div class="balloon" data-message="SURBALA!">B</div>
     </div>
-    <div class="message">AND MAKE IT THE BEST MEMORY..</div>
+    <div class="message">TAP THE BALLOONS TO REVEAL A SPECIAL MESSAGE!</div>
+    <div class="hidden-message" id="hiddenMessage"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        // Confetti effect
+        function launchConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+        setInterval(launchConfetti, 2000);
+
+        // Balloon game
+        const balloons = document.querySelectorAll('.balloon');
+        const messageDiv = document.querySelector('.message');
+        const hiddenMessageDiv = document.getElementById('hiddenMessage');
+        let poppedCount = 0;
+
+        balloons.forEach(balloon => {
+            balloon.addEventListener('click', () => {
+                if (!balloon.classList.contains('popped')) {
+                    balloon.classList.add('popped');
+                    poppedCount++;
+                    const messagePart = balloon.getAttribute('data-message');
+                    hiddenMessageDiv.textContent += messagePart + ' ';
+                    hiddenMessageDiv.classList.add('show');
+
+                    if (poppedCount === balloons.length) {
+                        messageDiv.textContent = 'HAPPY BIRTHDAY, SURBALA!';
+                        messageDiv.classList.add('show');
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
